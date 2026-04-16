@@ -1,0 +1,459 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#gameContainer {
+    width: 1200px;
+    height: 800px;
+    background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 开始界面 */
+#startScreen {
+    background: linear-gradient(180deg, #87CEEB 0%, #228B22 100%);
+}
+
+#startScreen h1 {
+    font-size: 64px;
+    color: #fff;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    margin-bottom: 60px;
+    animation: bounce 2s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btn {
+    padding: 15px 50px;
+    font-size: 24px;
+    background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+    border: 3px solid #8B4513;
+    border-radius: 10px;
+    color: #8B4513;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* 关卡选择界面 */
+#levelSelectScreen {
+    background: linear-gradient(180deg, #4a4a6a 0%, #2a2a4a 100%);
+}
+
+#levelSelectScreen h2 {
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.level-card {
+    width: 150px;
+    height: 200px;
+    background: linear-gradient(180deg, #90EE90 0%, #228B22 100%);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid #006400;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.level-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.level-card.locked {
+    background: linear-gradient(180deg, #808080 0%, #404040 100%);
+    border-color: #202020;
+    cursor: not-allowed;
+}
+
+.level-num {
+    font-size: 48px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.level-name {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* 帮助界面 */
+#helpScreen {
+    background: linear-gradient(180deg, #4a4a6a 0%, #2a2a4a 100%);
+    overflow-y: auto;
+}
+
+#helpScreen h2 {
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.help-content {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 800px;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 30px;
+}
+
+.help-content h3 {
+    font-size: 24px;
+    color: #228B22;
+    margin: 20px 0 10px 0;
+}
+
+.help-content ul {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.help-content li {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #333;
+}
+
+.help-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 游戏主界面 */
+#gameScreen {
+    padding: 0;
+    background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+}
+
+#topBar {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 3px solid #4a3018;
+}
+
+#sunDisplay {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 15px;
+    border-radius: 25px;
+}
+
+.sun-icon {
+    font-size: 28px;
+}
+
+#sunCount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#levelInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+}
+
+#currentLevel {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#waveInfo {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+#progressBar {
+    width: 200px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #4a3018;
+}
+
+#progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* 植物选择栏 */
+#plantSelector {
+    width: 100%;
+    height: 90px;
+    background: linear-gradient(180deg, #DEB887 0%, #D2691E 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 3px solid #8B4513;
+}
+
+.plant-card {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(180deg, #90EE90 0%, #228B22 100%);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 3px solid #006400;
+    position: relative;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.plant-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+.plant-card.selected {
+    border-color: #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    transform: scale(1.1);
+}
+
+.plant-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.plant-card.disabled:hover {
+    transform: scale(1);
+}
+
+.plant-icon {
+    font-size: 32px;
+}
+
+.plant-cost {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.cooldown-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 7px;
+    display: none;
+}
+
+.plant-card.cooling .cooldown-overlay {
+    display: block;
+}
+
+/* 游戏画布 */
+#gameCanvas {
+    display: block;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+    cursor: crosshair;
+}
+
+/* 游戏控制按钮 */
+#gameControls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    padding: 10px 25px;
+    font-size: 16px;
+    background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    color: #8B4513;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    transform: scale(1.05);
+}
+
+/* 游戏结束界面 */
+#gameOverScreen {
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#gameOverScreen h2 {
+    font-size: 56px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+#gameOverMessage {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 40px;
+}
+
+/* 暂停界面 */
+#pauseScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#pauseScreen h2 {
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pulse {
+    animation: pulse 0.5s ease infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 1250px) {
+    #gameContainer {
+        width: 95vw;
+        height: 95vh;
+    }
+}
+
+/* 阳光收集动画 */
+@keyframes sunCollect {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.sun-collecting {
+    animation: sunCollect 0.5s ease forwards;
+}

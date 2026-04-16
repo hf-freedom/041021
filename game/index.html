@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>植物大战僵尸 - 网页版</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- 开始界面 -->
+        <div id="startScreen" class="screen">
+            <h1>🌻 植物大战僵尸 🧟</h1>
+            <div class="menu">
+                <button id="startBtn" class="btn">开始游戏</button>
+                <button id="levelSelectBtn" class="btn">选择关卡</button>
+                <button id="helpBtn" class="btn">游戏帮助</button>
+            </div>
+        </div>
+
+        <!-- 关卡选择界面 -->
+        <div id="levelSelectScreen" class="screen hidden">
+            <h2>选择关卡</h2>
+            <div id="levelGrid" class="level-grid">
+                <div class="level-card" data-level="1">
+                    <span class="level-num">1</span>
+                    <span class="level-name">前院草坪</span>
+                </div>
+                <div class="level-card" data-level="2">
+                    <span class="level-num">2</span>
+                    <span class="level-name">夜间花园</span>
+                </div>
+                <div class="level-card" data-level="3">
+                    <span class="level-num">3</span>
+                    <span class="level-name">泳池派对</span>
+                </div>
+                <div class="level-card" data-level="4">
+                    <span class="level-num">4</span>
+                    <span class="level-name">浓雾迷城</span>
+                </div>
+                <div class="level-card" data-level="5">
+                    <span class="level-num">5</span>
+                    <span class="level-name">屋顶决战</span>
+                </div>
+            </div>
+            <button id="backToMenuBtn" class="btn">返回主菜单</button>
+        </div>
+
+        <!-- 游戏帮助界面 -->
+        <div id="helpScreen" class="screen hidden">
+            <h2>游戏帮助</h2>
+            <div class="help-content">
+                <h3>🌱 植物介绍</h3>
+                <ul>
+                    <li><strong>豌豆射手</strong> - 发射豌豆攻击僵尸，阳光消耗: 100</li>
+                    <li><strong>向日葵</strong> - 生产阳光，阳光消耗: 50</li>
+                    <li><strong>坚果墙</strong> - 坚固的防御墙，阳光消耗: 50</li>
+                    <li><strong>樱桃炸弹</strong> - 爆炸攻击范围内所有僵尸，阳光消耗: 150</li>
+                    <li><strong>寒冰射手</strong> - 发射冰冻豌豆减缓僵尸，阳光消耗: 175</li>
+                </ul>
+                <h3>🧟 僵尸介绍</h3>
+                <ul>
+                    <li><strong>普通僵尸</strong> - 基础僵尸，血量低</li>
+                    <li><strong>路障僵尸</strong> - 带有路障，血量中等</li>
+                    <li><strong>铁桶僵尸</strong> - 铁桶保护，血量高</li>
+                    <li><strong>读报僵尸</strong> - 读报时慢，报纸掉落后加速</li>
+                    <li><strong>橄榄球僵尸</strong> - 速度快，血量极高</li>
+                </ul>
+                <h3>🎮 操作说明</h3>
+                <p>点击植物卡片选择，再点击草坪种植。点击掉落的阳光收集。</p>
+            </div>
+            <button id="backFromHelpBtn" class="btn">返回</button>
+        </div>
+
+        <!-- 游戏主界面 -->
+        <div id="gameScreen" class="screen hidden">
+            <!-- 顶部信息栏 -->
+            <div id="topBar">
+                <div id="sunDisplay">
+                    <span class="sun-icon">☀️</span>
+                    <span id="sunCount">150</span>
+                </div>
+                <div id="levelInfo">
+                    <span id="currentLevel">关卡 1</span>
+                    <span id="waveInfo">波次: 1/5</span>
+                </div>
+                <div id="progressBar">
+                    <div id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- 植物选择栏 -->
+            <div id="plantSelector">
+                <div class="plant-card" data-plant="sunflower">
+                    <div class="plant-icon">🌻</div>
+                    <div class="plant-cost">50</div>
+                    <div class="cooldown-overlay"></div>
+                </div>
+                <div class="plant-card" data-plant="peashooter">
+                    <div class="plant-icon">🌱</div>
+                    <div class="plant-cost">100</div>
+                    <div class="cooldown-overlay"></div>
+                </div>
+                <div class="plant-card" data-plant="wallnut">
+                    <div class="plant-icon">🥜</div>
+                    <div class="plant-cost">50</div>
+                    <div class="cooldown-overlay"></div>
+                </div>
+                <div class="plant-card" data-plant="cherrybomb">
+                    <div class="plant-icon">🍒</div>
+                    <div class="plant-cost">150</div>
+                    <div class="cooldown-overlay"></div>
+                </div>
+                <div class="plant-card" data-plant="snowpea">
+                    <div class="plant-icon">❄️</div>
+                    <div class="plant-cost">175</div>
+                    <div class="cooldown-overlay"></div>
+                </div>
+            </div>
+
+            <!-- 游戏画布 -->
+            <canvas id="gameCanvas" width="1000" height="600"></canvas>
+
+            <!-- 游戏控制按钮 -->
+            <div id="gameControls">
+                <button id="pauseBtn" class="control-btn">暂停</button>
+                <button id="quitBtn" class="control-btn">退出</button>
+            </div>
+        </div>
+
+        <!-- 游戏结束界面 -->
+        <div id="gameOverScreen" class="screen hidden">
+            <h2 id="gameOverTitle">游戏结束</h2>
+            <p id="gameOverMessage"></p>
+            <button id="restartBtn" class="btn">重新开始</button>
+            <button id="menuBtn" class="btn">返回主菜单</button>
+        </div>
+
+        <!-- 暂停界面 -->
+        <div id="pauseScreen" class="overlay hidden">
+            <h2>游戏暂停</h2>
+            <button id="resumeBtn" class="btn">继续游戏</button>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/plants.js"></script>
+    <script src="js/zombies.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
