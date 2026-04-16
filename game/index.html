@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>植物大战僵尸 - Plant vs Zombies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #1a3a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #gameContainer {
+            position: relative;
+            width: 1200px;
+            height: 700px;
+            background: #76a829;
+            border: 4px solid #3d5c10;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        #gameCanvas {
+            display: block;
+        }
+        #topBar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, #5c7a22, #4a6318);
+            border-bottom: 3px solid #3d5c10;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 10;
+        }
+        #sunDisplay {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #5a4000;
+            margin-right: 30px;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 3px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #sunIcon {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffff00, #ffaa00);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700;
+        }
+        #plantCards {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+        .plantCard {
+            width: 80px;
+            height: 75px;
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            border: 3px solid #66bb6a;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            user-select: none;
+        }
+        .plantCard:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .plantCard.selected {
+            border-color: #ffeb3b;
+            box-shadow: 0 0 20px #ffeb3b;
+        }
+        .plantCard.cooldown {
+            filter: grayscale(0.7);
+            cursor: not-allowed;
+        }
+        .plantCard .cooldownOverlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            transition: height 0.1s linear;
+        }
+        .plantIcon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .plantCost {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2e4a0f;
+            margin-top: 3px;
+        }
+        #levelInfo {
+            background: linear-gradient(135deg, #7986cb, #5c6bc0);
+            padding: 10px 20px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        #waveInfo {
+            font-size: 14px;
+        }
+        #startScreen, #winScreen, #loseScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            color: white;
+        }
+        #startScreen h1, #winScreen h1, #loseScreen h1 {
+            font-size: 64px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px #76a829;
+        }
+        .menuBtn {
+            padding: 20px 60px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #76a829, #5c7a22);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .menuBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #76a829;
+        }
+        #levelSelect {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .levelBtn {
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #5c6bc0, #3f51b5);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .levelBtn:hover {
+            transform: scale(1.15);
+        }
+        .hidden {
+            display: none !important;
+        }
+        #dragPreview {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="topBar">
+            <div id="sunDisplay">
+                <div id="sunIcon"></div>
+                <span id="sunCount">50</span>
+            </div>
+            <div id="plantCards">
+                <div class="plantCard" data-plant="sunflower" data-cost="50">
+                    <div class="plantIcon" style="background: linear-gradient(135deg, #FFD700, #FFA000);">🌻</div>
+                    <div class="plantCost">向日葵 50☀</div>
+                    <div class="cooldownOverlay"></div>
+                </div>
+                <div class="plantCard" data-plant="peashooter" data-cost="100">
+                    <div class="plantIcon" style="background: linear-gradient(135deg, #81C784, #388E3C);">🌱</div>
+                    <div class="plantCost">豌豆 100☀</div>
+                    <div class="cooldownOverlay"></div>
+                </div>
+                <div class="plantCard" data-plant="snowpea" data-cost="175">
+                    <div class="plantIcon" style="background: linear-gradient(135deg, #81D4FA, #0288D1);">❄️</div>
+                    <div class="plantCost">寒冰 175☀</div>
+                    <div class="cooldownOverlay"></div>
+                </div>
+                <div class="plantCard" data-plant="wallnut" data-cost="50">
+                    <div class="plantIcon" style="background: linear-gradient(135deg, #A1887F, #5D4037);">🥜</div>
+                    <div class="plantCost">坚果 50☀</div>
+                    <div class="cooldownOverlay"></div>
+                </div>
+                <div class="plantCard" data-plant="cherrybomb" data-cost="150">
+                    <div class="plantIcon" style="background: linear-gradient(135deg, #EF5350, #B71C1C);">💣</div>
+                    <div class="plantCost">樱桃 150☀</div>
+                    <div class="cooldownOverlay"></div>
+                </div>
+            </div>
+            <div id="levelInfo">
+                <div id="levelNum">关卡 1</div>
+                <div id="waveInfo">波次: 0/0</div>
+            </div>
+        </div>
+        <canvas id="gameCanvas" width="1200" height="700"></canvas>
+        
+        <div id="startScreen">
+            <h1>🌻 植物大战僵尸 🧟</h1>
+            <p style="font-size: 20px; margin-bottom: 30px; color: #aaa;">选择关卡开始游戏</p>
+            <div id="levelSelect">
+                <button class="levelBtn" data-level="1">1</button>
+                <button class="levelBtn" data-level="2">2</button>
+                <button class="levelBtn" data-level="3">3</button>
+                <button class="levelBtn" data-level="4">4</button>
+                <button class="levelBtn" data-level="5">5</button>
+            </div>
+        </div>
+        
+        <div id="winScreen" class="hidden">
+            <h1>🎉 胜利！🎉</h1>
+            <p style="font-size: 24px; margin-bottom: 30px;">你成功抵御了所有僵尸！</p>
+            <button class="menuBtn" onclick="showStartScreen()">返回菜单</button>
+        </div>
+        
+        <div id="loseScreen" class="hidden">
+            <h1>💀 游戏结束 💀</h1>
+            <p style="font-size: 24px; margin-bottom: 30px;">僵尸入侵了你的花园！</p>
+            <button class="menuBtn" onclick="showStartScreen()">返回菜单</button>
+        </div>
+        
+        <div id="dragPreview"></div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
